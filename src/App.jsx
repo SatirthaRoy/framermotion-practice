@@ -1,39 +1,40 @@
-import { motion, MotionConfig, useAnimationControls } from "framer-motion"
+import { motion, useInView } from "framer-motion"
+import { useEffect } from "react"
+import { useRef } from "react"
 
 function App() {
-  const controls = useAnimationControls();
-  const handleClick = () =>{
-    controls.start('flip')
-  }
-  return (
-    <div className="w-screen h-screen grid place-content-center gap-4">
-      
-      <MotionConfig transition={{
-        duration: .2,
-        ease: 'easeInOut'
-      }}>
-        <motion.button onClick={handleClick} whileHover={{borderRadius: '10px', scale: 1.1}} className="p-4 bg-orange-400 text-white font-semibold">Flip</motion.button>
-      </MotionConfig>
-      <motion.div
-      className="size-28 bg-blue-400"
-      variants={{
-        initial: {
-          rotate: '0deg'
-        },
-        flip: {
-          rotate: '360deg'
-        }
-      }}
-      transition={{
-        duration: .5,
-        ease: 'easeOut'
-      }}
-      initial='initial'
-      animate={controls}
-      >
 
-      </motion.div>
-    </div>
+  const ref = useRef()
+
+  const isInview = useInView(ref, {once: true})
+
+  useEffect(() => {
+    console.log('is in view --> ', isInview);
+  }, [isInview])
+
+  return (
+    <>
+      <div style={{
+        height: '200vh'
+      }} className="w-screen">
+      </div>
+      <div style={{height: '100vh'}} className="grid place-content-center w-screen">
+        <motion.div className="size-40 bg-green-500 rounded-full"
+        initial={{scale: 1}}
+        whileInView={{
+          scale: 2
+        }}
+        transition={{duration: .5}}
+        ></motion.div>
+      </div>
+      <motion.div ref={ref} className="w-full h-screen bg-red-400"
+        initial={{opacity: 1}}
+        animate={{opacity: isInview ? 0 : 1}}
+        transition={{
+          duration: 1
+        }}
+      ></motion.div>
+    </>
   )
 }
 
