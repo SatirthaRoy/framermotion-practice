@@ -2,7 +2,7 @@
 function App() {
 
   return (
-    <div className="text-5xl">Hellow bitch</div>
+    <div className="text-5xl">Framer motion learning</div>
   )
 }
 
