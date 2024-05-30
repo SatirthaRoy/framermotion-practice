@@ -1,68 +1,86 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect } from "react";
 import { useState } from "react";
 
-function App() {
-  const [scale, setScale] = useState(1);
-  const [x, setX] = useState(null);
-  const [show, setShow] = useState(true);
 
-  const keyClick = (e) => {
-    console.log(e.key);
-    if (e.key === "ArrowUp") {
-      setScale(scale + 2);
-    }
-    if (e.key === "ArrowDown") {
-      setScale(scale - 3);
-    }
-    if (e.key === "ArrowRight") {
-      setX(x + 100);
-    }
-    if (e.key === "ArrowLeft") {
-      setX(x - 100);
-    }
-    if (e.key === "0") {
-      setShow(!show);
-    }
-  };
+const  varients= {
+  closeMenuTopLine: {
+    rotate: 45,
+    y: 8,
+    transition: {type: 'spring', duration: 1}
+  },
+  openMenuLine :  {
+    rotate: 0,
+    y: 0,
+    transition: {type: 'spring', duration: 1}
+  },
+  closeMenuBottomLine: {
+    rotate: -45,
+    y: -8,
+    transition: {type: 'spring', duration: 1}
+  },
+  moveMenubuttonToR: {
+    x: 160,
+    y: -50,
+    transition: {duration: .7}
+  },
+  moveMenubuttonToL: {
+    x: 0,
+    transition: {duration: .7}
+  },
+  menuClose: {
+    x: window.innerWidth > 767 ? '-50vw' : '-100vw',
+    scaleY: .9,
+    transition: {ease: 'easeInOut' ,duration: .7}
+  },
+  menuOpen: {
+    x: 0,                                                                             
+    transition: {ease: 'easeInOut', duration: .7}
+  }
+}
+
+const menuItemsVarients = {
+  menuClose: {
+    y: 130,
+    transition: { duration: .7, ease: 'easeInOut'}
+  },
+  menuOpen: {
+    y: 0,
+    transition: {delay: .1, duration: .7, ease: 'easeInOut'}
+  }
+}
+
+const MenuItems = ({children, menuOpen}) => {
+  return (
+    <div variants={menuItemsVarients} animate={menuOpen ? 'menuOpen' : 'menuClose'} className="clippy overflow-y-hidden"><motion.h1 variants={menuItemsVarients} initial={{y: 0}} animate={menuOpen ? 'menuOpen' : 'menuClose'} className="text-white font-semibold text-4xl md:text-7xl lg:text-9xl">{children}</motion.h1></div>
+  )
+}
+
+function App() {
+
+  const [menuOpen, setOpen] = useState(false);
+
+  const handleMenu = () => {
+    setOpen(!menuOpen);
+    console.log(menuOpen);
+  }
 
   return (
     <div
-        tabIndex="0"
-        onKeyUpCapture={keyClick}
-        className="grid place-content-center h-screen overflow-hidden"
-      >
-    <AnimatePresence mode="sync">
-        {show && (
-          <motion.div
-            initial={{
-              scale: 0
-            }}
-            // animate={{
-            //   scale: [1, 2, 2, 1.4, 1],
-            //   x: [0, 200, 400, -300, 0],
-            //   rotate: [0, 360, 720, -360, 360],
-            //   borderRadius: ['0%','50%',' 10%', '20%', '0%'],
-            //   backgroundColor: ['#5563e0', '#eb3144', '#d415cd', '#09eb81', '#5563e0']
-            // }}
-            animate= {{
-              scale: 1
-            }}
-            whileHover={{
-              scale: [null, 1.5, 1.4]
-            }}
-            whileTap={{
-              scale: 1
-            }}
-            exit={{
-              scale: 0,
-            }}
-            transition={{ ease: 'easeInOut', duration: .3 }}
-            className="size-14 rounded-lg bg-blue-400"
-          ></motion.div>
-        )}
-    </AnimatePresence>
-      </div>
+      className="h-screen overflow-x-hidden bg-slate-500"
+    >
+
+      <AnimatePresence mode="sync">
+        <motion.div variants={varients} initial={{x: window.innerWidth > 767 ? '-50vw' : '-100vw', scaleY: 1}} animate={menuOpen ? 'menuOpen' : 'menuClose'} exit={{scaleY: 1}} className="p-10 relative h-screen md:w-1/2 bg-[#34360e] grid place-content-center gap-4 rounded-tr-[100px] rounded-br-[100px]">
+          <MenuItems menuOpen={menuOpen}>Home</MenuItems>
+          <MenuItems menuOpen={menuOpen}>About</MenuItems>
+          <MenuItems menuOpen={menuOpen}>Contact</MenuItems>
+          <motion.div variants={varients} animate={!menuOpen ? 'moveMenubuttonToR': 'moveMenubuttonToL'} className="absolute top-16 right-24 space-y-3 cursor-pointer" onClick={handleMenu}>
+            <motion.div variants={varients} animate={menuOpen ? 'closeMenuTopLine' : 'openMenuLine'} className="bg-white h-1 w-10"></motion.div>
+            <motion.div variants={varients} animate={menuOpen ? 'closeMenuBottomLine' : 'openMenuLine'} className="bg-white h-1 w-10"></motion.div>
+          </motion.div>
+        </motion.div>
+      </AnimatePresence>
+    </div>
   );
 }
 
