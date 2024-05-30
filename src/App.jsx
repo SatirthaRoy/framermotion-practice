@@ -45,7 +45,7 @@ const menuItemsVarients = {
   },
   menuOpen: {
     y: 0,
-    transition: {delay: .1, duration: .7, ease: 'easeInOut'}
+    transition: {delay: .1, duration: .7, ease: 'easeInOut', staggerChildren: .3}
   }
 }
 
